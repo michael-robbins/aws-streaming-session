@@ -1,5 +1,5 @@
 # AWS Streaming Session
-AWS Streaming Walkthrough of Kinesis &amp; Kafka
+A quick overview of the streaming data ecosystem and some of the unique challenges that come with it. Combined with a practical walkthrough of Kinesis &amp; Kafka.
 
 This session will be broken into two parts:
 Part 1: AWS Managed Streaming for Apache Kafka (MSK)
