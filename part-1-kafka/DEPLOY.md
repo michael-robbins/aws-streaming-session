@@ -1,5 +1,5 @@
 # Deploy the AWS Kafka Cluster
 
 ```bash
-aws cloud-formation deploy-stack --foo --bar
+aws cloudformation deploy --template-file infrastructure-as-code/kafka-cluster.yml --stack-name your-name-kafka-cluster
 ```
