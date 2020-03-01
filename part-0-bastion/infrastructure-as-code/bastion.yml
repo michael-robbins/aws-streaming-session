@@ -1,0 +1,67 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Streaming Session - Part 0 - Bastion"
+
+Parameters:
+  ResourcePrefix:
+    Type: "String"
+    Description: "Prefix added to all created resources"
+    AllowedPattern: "[a-zA-Z0-9-]+"
+
+  Keypair:
+    Type: "AWS::EC2::KeyPair::KeyName"
+    Description: "Your personal SSH keypair"
+
+  VpcId:
+    Type: "AWS::EC2::VPC::Id"
+
+  SubnetId:
+    Type: "AWS::EC2::Subnet::Id"
+
+  LatestAMIId:
+    Type: "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>"
+    Default: "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
+
+Resources:
+  BastionSG:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupName: !Sub "${ResourcePrefix}-bastion-sg"
+      SecurityGroupEgress:
+        - CidrIp: "0.0.0.0/0"
+          Description: "Allow all outbound access"
+          IpProtocol: "-1"
+      SecurityGroupIngress:
+        - CidrIp: "0.0.0.0/0"
+          Description: "Allow inbound SSH"
+          FromPort: 22
+          IpProtocol: "tcp"
+          ToPort: 22
+      Tags:
+        "SessionName": "Streaming"
+        "SessionPart": "0"
+      VpcId: !Ref VpcId
+
+  BastionEC2:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      IamInstanceProfile: 
+      ImageId: !Ref LatestAMIId
+      InstanceType: "t3.micro"
+      KeyName: !Ref Keypair
+      SecurityGroupIds:
+        - !Ref BastionSG
+      SubnetId: !Ref SubnetId
+      Tags:
+        "SessionName": "Streaming"
+        "SessionPart": "0"
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash -ex
+            yum install -y python3 python3-pip git vim
+            pip3 install kafka-python==2.0.1
+
+            su - ec2-user
+            git clone https://github.com/michael-robbins/aws-streaming-session.git
+            

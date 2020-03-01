@@ -1,0 +1,71 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Streaming Session - Part 1 - Kafka Cluster"
+
+Parameters:
+  ResourcePrefix:
+    Type: "String"
+    Description: "Prefix added to all created resources"
+    AllowedPattern: "[a-zA-Z0-9-]+"
+
+  BastionSG:
+    Type: "AWS::EC2::SecurityGroup::Id"
+    Description: "Bastion Security Group"
+
+  VpcId:
+    Type: "AWS::EC2::VPC::Id"
+
+  SubnetIds:
+    Type: "List<AWS::EC2::Subnet::Id>"
+  
+
+Resources:
+  KafkaClusterBrokerSG:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupName: !Sub "${ResourcePrefix}-kafka-broker-sg"
+      SecurityGroupEgress:
+        - CidrIp: "0.0.0.0"
+          Description: "Allow all outbound access"
+          IpProtocol: "-1"
+      SecurityGroupIngress:
+        - Description: "Allow Kafka traffic from Bastion"
+          FromPort: 9092
+          IpProtocol: "tcp"
+          SourceSecurityGroupId: !Ref BastionSG
+          ToPort: 9092
+      Tags:
+        "SessionName": "Streaming"
+        "SessionPart": "1"
+      VpcId: !Ref VpcId
+
+  BastionKafkaOutboundRule:
+    Type: "AWS::EC2::SecurityGroupEgress"
+    Properties:
+      Description: "Allow Kafka traffic from Bastion"
+      DestinationSecurityGroupId: !Ref KafkaClusterBrokerSG
+      FromPort: 9092
+      GroupId: !Ref BastionSG
+      IpProtocol: "tcp"
+      ToPort: 9092
+
+  KafkaCluster:
+    Type: "AWS::MSK::Cluster"
+    Properties:
+      BrokerNodeGroupInfo:
+        ClientSubnets: !Ref SubnetIds
+        InstanceType: "kafka.m5.large"
+        SecurityGroups:
+          - !Ref KafkaClusterBrokerSG
+        StorageInfo:
+          EBSStorageInfo:
+            VolumeSize: 50
+      ClusterName: !Sub "${ResourcePrefix}-kafka-cluster"
+      EncryptionInfo:
+        EncryptionInTransit:
+          ClientBroker: "PLAINTEXT"
+      KafkaVersion: "2.3.1"
+      NumberOfBrokerNodes: 3
+      Tags:
+        "SessionName": "Streaming"
+        "SessionPart": "1"
