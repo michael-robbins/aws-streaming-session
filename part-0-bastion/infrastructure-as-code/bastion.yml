@@ -71,9 +71,9 @@ Resources:
             yum install -y python3 python3-pip git vim
             pip3 install kafka-python==2.0.1
 
-            su - ec2-user
             pushd /home/ec2-user
             git clone https://github.com/michael-robbins/aws-streaming-session.git
+            chown -R ec2-user:ec2-user aws-streaming-session
             popd
 
 Outputs:
