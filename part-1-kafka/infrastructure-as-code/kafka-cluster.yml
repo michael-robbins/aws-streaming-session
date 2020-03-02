@@ -8,34 +8,36 @@ Parameters:
     Description: "Prefix added to all created resources"
     AllowedPattern: "[a-zA-Z0-9-]+"
 
-  BastionSG:
-    Type: "AWS::EC2::SecurityGroup::Id"
-    Description: "Bastion Security Group"
-
   VpcId:
     Type: "AWS::EC2::VPC::Id"
+    Default: "vpc-4afffa2d"
 
   SubnetIds:
     Type: "List<AWS::EC2::Subnet::Id>"
+    Default: "subnet-30688556,subnet-50160819,subnet-8ed04fd6"
 
 Resources:
   KafkaClusterBrokerSG:
     Type: "AWS::EC2::SecurityGroup"
     Properties:
       GroupName: !Sub "${ResourcePrefix}-kafka-broker-sg"
+      GroupDescription: "Streaming Kafka Broker SG"
       SecurityGroupEgress:
-        - CidrIp: "0.0.0.0"
+        - CidrIp: "0.0.0.0/0"
           Description: "Allow all outbound access"
           IpProtocol: "-1"
       SecurityGroupIngress:
         - Description: "Allow Kafka traffic from Bastion"
           FromPort: 9092
           IpProtocol: "tcp"
-          SourceSecurityGroupId: !Ref BastionSG
+          SourceSecurityGroupId:
+            Fn::ImportValue: !Sub "${ResourcePrefix}-bastion-sg"
           ToPort: 9092
       Tags:
-        "SessionName": "Streaming"
-        "SessionPart": "1"
+        - Key: "SessionName"
+          Value: "Streaming"
+        - Key: "SessionPart"
+          Value: "1"
       VpcId: !Ref VpcId
 
   BastionKafkaOutboundRule:
@@ -44,7 +46,8 @@ Resources:
       Description: "Allow Kafka traffic from Bastion"
       DestinationSecurityGroupId: !Ref KafkaClusterBrokerSG
       FromPort: 9092
-      GroupId: !Ref BastionSG
+      GroupId:
+        Fn::ImportValue: !Sub "${ResourcePrefix}-bastion-sg"
       IpProtocol: "tcp"
       ToPort: 9092
 

@@ -37,3 +37,12 @@ The flow of events in a Pub/Sub service usually follows these basic steps:
 4. An event is sent to the Broker hosting the topic with the information
 5. The Broker ensures the event is stored correctly and makes it available to its Subscribers
 6. One or more Subscribers download the event and do 'something'
+
+# Deploy the AWS Kafka Cluster
+
+```bash
+aws cloudformation deploy --template-file infrastructure-as-code/kafka-cluster.yml --stack-name streaming-<your-name>-kafka-cluster --parameter-overrides "ResourcePrefix=streaming-<your-name>"
+
+# Example as Michael Robbins
+aws cloudformation deploy --template-file infrastructure-as-code/kafka-cluster.yml --stack-name streaming-michaelr-kafka-cluster --parameter-overrides "ResourcePrefix=streaming-michaelr"
+```
