@@ -19,7 +19,7 @@
 3. Navigate to the CloudFormation Dashboard
 4. Create a new Stack
 5. Enter in the URL Box: https://awshandson-streaming-iac.s3.amazonaws.com/bastion.yml
-6. Stack Name: 'Streaming-<YourName>-Bastion'  
+6. Stack Name: 'streaming-<your-name>-bastion'
    Keypair: Select the one you created earlier from the dropdown  
    Resource Prefix: 'streaming-<your-name>' (no spaces, just '-' if possible)  
    SubnetId: Chose any option  
@@ -27,8 +27,8 @@
 
 
 ```bash
-aws cloudformation deploy --template-file infrastructure-as-code/bastion.yml --stack-name Streaming-<YourName>-Bastion --parameter-overrides "ResourcePrefix=streaming-<your-name>" "Keypair=<keypair.name>" "VpcId=vpc-4afffa2d" "SubnetId=subnet-30688556"
+aws cloudformation deploy --template-file infrastructure-as-code/bastion.yml --stack-name streaming-<your-name>-bastion --parameter-overrides "ResourcePrefix=streaming-<your-name>" "Keypair=<keypair.name>" "VpcId=vpc-4afffa2d" "SubnetId=subnet-30688556"
 
 # Example as Michael Robbins
-aws cloudformation deploy --template-file infrastructure-as-code/bastion.yml --stack-name Streaming-MichaelR-Bastion --parameter-overrides "ResourcePrefix=streaming-michaelr" "Keypair=michael.robbins" "VpcId=vpc-4afffa2d" "SubnetId=subnet-30688556"
+aws cloudformation deploy --template-file infrastructure-as-code/bastion.yml --stack-name streaming-michaelr-bastion --parameter-overrides "ResourcePrefix=streaming-michaelr" "Keypair=michael.robbins" "VpcId=vpc-4afffa2d" "SubnetId=subnet-30688556"
 ```
