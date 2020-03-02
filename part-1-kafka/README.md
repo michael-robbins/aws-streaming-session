@@ -46,3 +46,5 @@ aws cloudformation deploy --template-file infrastructure-as-code/kafka-cluster.y
 # Example as Michael Robbins
 aws cloudformation deploy --template-file infrastructure-as-code/kafka-cluster.yml --stack-name streaming-michaelr-kafka-cluster --parameter-overrides "ResourcePrefix=streaming-michaelr"
 ```
+
+This will take approx. 10 minutes to deploy the Kafka cluster!
