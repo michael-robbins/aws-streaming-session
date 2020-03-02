@@ -14,9 +14,11 @@ Parameters:
 
   VpcId:
     Type: "AWS::EC2::VPC::Id"
+    Default: "vpc-4afffa2d"
 
   SubnetId:
     Type: "AWS::EC2::Subnet::Id"
+    Default: "subnet-30688556"
 
   LatestAMIId:
     Type: "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>"
@@ -73,4 +75,10 @@ Resources:
             pushd /home/ec2-user
             git clone https://github.com/michael-robbins/aws-streaming-session.git
             popd
-            
+
+Outputs:
+  BastionSG:
+    Description: Security Group ID of the Bastion
+    Value: !Ref BastionSG
+    Export:
+      Name: !Sub "${ResourcePrefix}-bastion-sg"
