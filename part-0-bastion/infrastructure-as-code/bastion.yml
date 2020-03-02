@@ -27,6 +27,7 @@ Resources:
     Type: "AWS::EC2::SecurityGroup"
     Properties:
       GroupName: !Sub "${ResourcePrefix}-bastion-sg"
+      GroupDescription: "Streaming Bastion SG"
       SecurityGroupEgress:
         - CidrIp: "0.0.0.0/0"
           Description: "Allow all outbound access"
@@ -38,14 +39,15 @@ Resources:
           IpProtocol: "tcp"
           ToPort: 22
       Tags:
-        "SessionName": "Streaming"
-        "SessionPart": "0"
+        - Key: "SessionName"
+          Value: "Streaming"
+        - Key: "SessionPart"
+          Value: "0"
       VpcId: !Ref VpcId
 
   BastionEC2:
     Type: "AWS::EC2::Instance"
     Properties:
-      IamInstanceProfile: 
       ImageId: !Ref LatestAMIId
       InstanceType: "t3.micro"
       KeyName: !Ref Keypair
@@ -53,8 +55,12 @@ Resources:
         - !Ref BastionSG
       SubnetId: !Ref SubnetId
       Tags:
-        "SessionName": "Streaming"
-        "SessionPart": "0"
+        - Key: "SessionName"
+          Value: "Streaming"
+        - Key: "SessionPart"
+          Value: "0"
+        - Key: "Name"
+          Value: !Sub "${ResourcePrefix}-bastion"
       UserData:
         Fn::Base64:
           !Sub |
