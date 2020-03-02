@@ -7,11 +7,11 @@
 4. Select 'Key Pairs' from the left hand menu
 5. Create a new Key Pair with your own name in the Key Pair name
 6. Select 'pem' or 'ppk' depending on your laptop 
-   6.1. pem for Linux/Mac/Windows SSH
-   6.2. ppk for Windows Putty
+  * pem for Linux/Mac/Windows SSH
+  * ppk for Windows Putty
 7. Save the keypair to your computer in the right place
-   7.1. ~/.ssh/handson.pem for SSH
-   7.2. anywhere really for Windows Putty
+  * ~/.ssh/handson.pem for SSH
+  * anywhere really for Windows Putty
 
 ## Deploy the Bastion IAC
 1. Log into the AWS Console
@@ -19,11 +19,11 @@
 3. Navigate to the CloudFormation Dashboard
 4. Create a new Stack
 5. Enter in the URL Box: https://awshandson-streaming-iac.s3.amazonaws.com/bastion.yml
-6. Stack Name: 'Streaming-<YourName>-Bastion'
-   Keypair: Select the one you created earlier from the dropdown
-   Resource Prefix: 'streaming-<your-name>' (no spaces, just '-' if possible)
-   SubnetId: Chose any option
-   VpcId: Chose the only option
+6. Stack Name: 'Streaming-<YourName>-Bastion'  
+   Keypair: Select the one you created earlier from the dropdown  
+   Resource Prefix: 'streaming-<your-name>' (no spaces, just '-' if possible)  
+   SubnetId: Chose any option  
+   VpcId: Chose the only option  
 
 
 ```bash
