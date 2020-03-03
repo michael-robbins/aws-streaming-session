@@ -1,7 +1,47 @@
 ---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Streaming Session - Part 2 - Kinesis Streams"
 
+Parameters:
+  ResourcePrefix:
+    Type: "String"
+    Description: "Prefix added to all created resources"
+    AllowedPattern: "[a-zA-Z0-9-]+"
 
-# Orders Stream
-# Customer Stream
-# Invoices Stream
-# Shipping Stream
+Resources:
+  StreamReaderRole:
+    Type: "AWS::IAM::Role"
+
+  CustomerStream:
+    Type: "AWS::Kinesis::Stream"
+    Properties: 
+      Name: !Sub "${ResourcePrefix}-customer-stream"
+      ShardCount: 1
+      Tags: 
+        - Name: "SessionName"
+          Value: "Streaming"
+        - Name: "SessionPart"
+          Value: "2"
+
+  CustomerStreamAnalytics:
+    Type: "AWS::KinesisAnalyticsV2::Application"
+    Properties: 
+      ApplicationConfiguration:
+        SqlApplicationConfiguration:
+          Inputs:
+            - InputSchema:
+                RecordColumns:
+                  - Mapping: ".customer_id"
+                    Name: "customer_id"
+                    SqlType: "TEXT"
+                RecordFormat:
+                  MappingParameters:
+                    JSONMappingParameters:
+                      RecordRowPath: "."
+                  RecordFormatType: "JSON"
+              KinesisStreamsInput:
+                ResourceARN: !Ref CustomerStream
+              NamePrefix: "CustomerStream"
+      ApplicationName: !Sub "${ResourcePrefix}-customer-stream-analytics"
+      RuntimeEnvironment: "SQL-1_0"
+      ServiceExecutionRole: !Ref StreamReaderRole
