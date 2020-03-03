@@ -4,14 +4,16 @@ from kafka import KafkaProducer
 from kafka.errors import KafkaError
 
 import requests
+import random
 import json
+import time
 
 
 PROFILE_URL = "https://randomuser.me/api/?nat=au"
 
 
 def generate_customer():
-    response = request.get(PROFILE_URL).json()
+    response = requests.get(PROFILE_URL).json()
     profile = response["results"][0]
 
     return {
@@ -28,15 +30,6 @@ def generate_customer():
     }
 
 
-def send_items_forever(producer, topic):
-    while True:
-        customer = generate_customer()
-        producer.send(topic, customer)
-        print(customer)
-
-        time.sleep(random.randrange(5))
-
-
 if __name__ == "__main__":
     brokers = [
         "broker-1:9092",
@@ -49,4 +42,9 @@ if __name__ == "__main__":
         value_serializer=lambda m: json.dumps(m).encode("utf-8"),
     )
 
-    send_items_forever(producer, "customers")
+    while True:
+        customer = generate_customer()
+        producer.send("customers", customer)
+        print(customer)
+
+        time.sleep(random.randrange(10))

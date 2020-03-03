@@ -6,31 +6,28 @@ from kafka.errors import KafkaError
 import datetime
 import json
 import time
+import uuid
 
 
 def generate_invoice(order):
     invoice = {
-        "invoice_id": order["order_id"] + 100000,
+        "invoice_id": str(uuid.uuid4()),
         "order_id": order["order_id"],
+        "customer_id": order["customer_id"],
         "generated_on": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S%z"),
         "total": sum(i["price"] for i in order["items"]),
     }
 
-    invoice["total_inc_gst"] = invoice["total"] + (invoice["total"] * 0.10)
+    invoice["total_inc_gst"] = round(invoice["total"] + (invoice["total"] * 0.10), 2)
 
     return invoice
 
-def listen_for_orders_forever(consumer, producer):
-    for order in consumer:
-        invoice = generate_invoice(order)
-        producer.send("invoices", key=str(invoice["id"]).encode("utf-8"), value=invoice)
-        print(invoice)
 
 if __name__ == "__main__":
     brokers = [
         "broker-1:9092",
         "broker-2:9092",
-        "broker-3:9092"
+        "broker-3:9092",
     ]
 
     producer = KafkaProducer(
@@ -38,10 +35,21 @@ if __name__ == "__main__":
         value_serializer=lambda m: json.dumps(m).encode("utf-8"),
     )
 
-    consumer = KafkaConsumer(
+    orders_consumer = KafkaConsumer(
         "orders",
         bootstrap_servers=brokers,
         value_deserializer=lambda m: json.loads(m.decode("utf-8")),
+        auto_offset_reset="earliest",
+        enable_auto_commit=True,
     )
 
-    listen_for_orders_forever(consumer, producer)
+    while True:
+        response = orders_consumer.poll()
+
+        for partition, orders in response.items():
+            for order in orders:
+                invoice = generate_invoice(order.value)
+                producer.send("invoices", invoice)
+                print(invoice)
+
+        time.sleep(1)

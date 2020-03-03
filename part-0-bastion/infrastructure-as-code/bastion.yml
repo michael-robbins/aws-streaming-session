@@ -73,6 +73,7 @@ Resources:
             yum update -y
             yum install -y python3 python3-pip git vim
             pip3 install kafka-python==2.0.1
+            pip3 install requests
 
             pushd /home/ec2-user
             git clone https://github.com/michael-robbins/aws-streaming-session.git

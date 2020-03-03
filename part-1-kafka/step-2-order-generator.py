@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
-from kafka import KafkaProducer
+from kafka import KafkaProducer, KafkaConsumer
 from kafka.errors import KafkaError
 
 import datetime
 import random
 import json
 import time
+import uuid
 
 
 PRODUCTS = [
@@ -25,37 +26,73 @@ PRODUCTS = [
     {"type": "spirits", "brand": "Bruichladdich", "product": "Sherry Cask Edition 25YO", "price": 850},
 ]
 
+
+CUSTOMERS = {}
+
+
 def generate_items(choices=3):
     return [random.choice(PRODUCTS) for _ in range(random.randrange(1, choices + 1))]
 
-def generate_order(order_id):
+
+def generate_order():
     return {
-        "order_id": order_id,
+        "order_id": str(uuid.uuid4()),
+        "customer_id": random.choice(list(CUSTOMERS.keys())),
         "order_time": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S%z"),
         "items": generate_items(),
     }
 
-def send_items_forever(producer, topic):
-    order_id = 100001
 
-    while True:
-        order = generate_order(order_id)
-        producer.send(topic, key=str(order_id).encode("utf-8"), value=order)
-        print(order)
-        order_id += 1
+def update_customers(consumer):
+    response = customer_consumer.poll()
 
-        time.sleep(random.randrange(5))
+    i = 0
+    for partition, customers in response.items():
+        for customer in customers:
+            i += 1
+
+            CUSTOMERS[customer.value["id"]] = customer.value
+
+    if i:
+        print("Updated {0} customers".format(i))
+
 
 if __name__ == "__main__":
     brokers = [
         "broker-1:9092",
         "broker-2:9092",
-        "broker-3:9092"
+        "broker-3:9092",
     ]
 
     producer = KafkaProducer(
         bootstrap_servers=brokers,
-        value_serializer=lambda m: json.dumps(m).encode('utf-8'),
+        value_serializer=lambda m: json.dumps(m).encode("utf-8"),
     )
 
-    send_items_forever(producer, "orders")
+    customer_consumer = KafkaConsumer(
+        "customers",
+        bootstrap_servers=brokers,
+        value_deserializer=lambda m: json.loads(m.decode("utf-8")),
+        auto_offset_reset="earliest",
+        enable_auto_commit=True,
+    )
+
+    # Resync the entire customer topic into memory
+    customer_consumer.topics()
+    customer_consumer.seek_to_beginning()
+
+    while not CUSTOMERS:
+        update_customers(customer_consumer)
+        time.sleep(0.5)
+
+    # Generate orders forever
+    while True:
+        # Get any new/updated customers
+        update_customers(customer_consumer)
+
+        # Generate an order
+        order = generate_order()
+        producer.send("orders", order)
+        print(order)
+
+        time.sleep(random.randrange(5))
