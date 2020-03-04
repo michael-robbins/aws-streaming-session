@@ -71,7 +71,7 @@ Resources:
         ApplicationCodeConfiguration:
           CodeContent:
             TextContent: !Sub |
-              CREATE STREAM "DESTINATION_SQL_STREAM"(
+              CREATE STREAM "CUSTOMER_OUTPUT" (
                 MetricType VARCHAR(16),
                 EventTimestamp BIGINT,
                 MetricItem VARCHAR(1024),
@@ -80,7 +80,7 @@ Resources:
               );
 
               CREATE OR REPLACE PUMP "CUSTOMER_PUMP" AS
-              INSERT INTO "DESTINATION_SQL_STREAM" (MetricType, EventTimestamp, MetricItem, UnitValueInt)
+              INSERT INTO "CUSTOMER_OUTPUT" (MetricType, EventTimestamp, MetricItem, UnitValueInt)
               SELECT 'customer_city_count', UNIX_TIMESTAMP(eventTimestamp), city, city_count FROM (
                 SELECT STREAM
                     customers."location_city" as city,
@@ -141,7 +141,7 @@ Resources:
     Properties:
       ApplicationName: !Ref CustomerStreamAnalytics
       Output:
-        Name: "customer_output"
+        Name: "CUSTOMER_OUTPUT"
         DestinationSchema:
           RecordFormatType: CSV
         KinesisStreamsOutput:
