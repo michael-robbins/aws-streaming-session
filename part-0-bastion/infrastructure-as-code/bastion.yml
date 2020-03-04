@@ -36,20 +36,16 @@ Resources:
           FromPort: 22
           IpProtocol: "tcp"
           ToPort: 22
+      SecurityGroupEgress:
+        - CidrIp: "0.0.0.0/0"
+          Description: "Allow internet access"
+          IpProtocol: "-1"
       Tags:
         - Key: "SessionName"
           Value: "Streaming"
         - Key: "SessionPart"
           Value: "0"
       VpcId: !Ref VpcId
-
-  BastionSGOutbound:
-    Type: "AWS::EC2::SecurityGroupEgress"
-    Properties:
-      CidrIp: "0.0.0.0/0"
-      Description: "Allow internet access"
-      IpProtocol: "-1"
-      GroupId: !Ref BastionSG
 
   BastionEC2:
     Type: "AWS::EC2::Instance"
