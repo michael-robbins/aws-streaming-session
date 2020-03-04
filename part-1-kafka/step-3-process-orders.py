@@ -12,8 +12,8 @@ import uuid
 
 def generate_invoice(order):
     invoice = {
-        "invoice_id": str(uuid.uuid4()),
-        "order_id": order["order_id"],
+        "id": str(uuid.uuid4()),
+        "order_id": order["id"],
         "customer_id": order["customer_id"],
         "generated_on": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S%z"),
         "total": sum(i["price"] for i in order["items"]),

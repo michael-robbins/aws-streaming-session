@@ -37,7 +37,7 @@ def generate_items(choices=3):
 
 def generate_order():
     return {
-        "order_id": str(uuid.uuid4()),
+        "id": str(uuid.uuid4()),
         "customer_id": random.choice(list(CUSTOMERS.keys())),
         "order_time": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S%z"),
         "items": generate_items(),

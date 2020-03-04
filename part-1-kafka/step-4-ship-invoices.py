@@ -15,8 +15,8 @@ CUSTOMERS = {}
 
 def generate_shipment(invoice):
     shipment = {
-        "shipment_id": str(uuid.uuid4()),
-        "invoice_id": invoice["invoice_id"],
+        "id": str(uuid.uuid4()),
+        "invoice_id": invoice["id"],
         "order_id": invoice["order_id"],
         "customer_id": invoice["customer_id"],
         "generated_on": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S%z"),
