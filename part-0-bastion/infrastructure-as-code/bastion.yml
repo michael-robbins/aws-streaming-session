@@ -46,7 +46,7 @@ Resources:
   BastionSGOutbound:
     Type: "AWS::EC2::SecurityGroupEgress"
     Properties:
-      Cidr: "0.0.0.0/0"
+      CidrIp: "0.0.0.0/0"
       Description: "Allow internet access"
       IpProtocol: "-1"
 
