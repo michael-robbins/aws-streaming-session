@@ -141,7 +141,7 @@ Resources:
     Properties:
       ApplicationName: !Ref CustomerStreamAnalytics
       Output:
-        Name: "customer-output"
+        Name: "customer_output"
         DestinationSchema:
           RecordFormatType: CSV
         KinesisStreamsOutput:
