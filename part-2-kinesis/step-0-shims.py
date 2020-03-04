@@ -16,12 +16,12 @@ prefix = get_prefix()
 if prefix is None:
     raise Exception("Unable to find prefix?")
 
-topic_to_stream = [
+topic_to_stream = {
     "customers": "{prefix}-customer-stream".format(prefix=prefix),
     "orders":    "{prefix}-order-stream".format(prefix=prefix),
     "invoices":  "{prefix}-invoice-stream".format(prefix=prefix),
     "shipments": "{prefix}-shipment-stream".format(prefix=prefix),
-]
+}
 
 
 # Build a list of Kafka Consumers => Kinesis Stream Names
