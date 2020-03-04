@@ -86,7 +86,7 @@ Resources:
                     customers."location_city" as city,
                     count(*) as city_count,
                     STEP (customers.ROWTIME BY INTERVAL '10' SECOND) as eventTimestamp
-                FROM "CustomerStream_001" customers
+                FROM "CUSTOMER_STREAM_001" customers
                 GROUP BY
                     customers."location_state",
                     STEP (customers.ROWTIME BY INTERVAL '10' SECOND)
@@ -131,7 +131,7 @@ Resources:
                   RecordFormatType: "JSON"
               KinesisStreamsInput:
                 ResourceARN: !GetAtt "CustomerStream.Arn"
-              NamePrefix: "CustomerStream"
+              NamePrefix: "CUSTOMER_STREAM"
       ApplicationName: !Sub "${ResourcePrefix}-customer-stream-analytics"
       RuntimeEnvironment: "SQL-1_0"
       ServiceExecutionRole: !GetAtt KinesisAnalyticsRole.Arn
