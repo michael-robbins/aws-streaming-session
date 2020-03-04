@@ -16,6 +16,7 @@ def get_prefix(filename="../resource_prefix.json"):
     with open(filename) as prefix_file:
         prefix = json.load(prefix_file)["prefix"]
 
+    return prefix
 
 def get_brokers():
     prefix = get_prefix()
