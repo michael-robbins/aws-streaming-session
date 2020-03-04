@@ -27,8 +27,8 @@
 
 
 ```bash
-aws cloudformation deploy --template-file infrastructure-as-code/bastion.yml --stack-name streaming-<your-name>-bastion --parameter-overrides "ResourcePrefix=streaming-<your-name>" "Keypair=<keypair.name>" "VpcId=vpc-4afffa2d" "SubnetId=subnet-30688556"
+aws cloudformation deploy --template-file infrastructure-as-code/bastion.yml --stack-name streaming-<your-name>-bastion --parameter-overrides "ResourcePrefix=streaming-<your-name>" "Keypair=<keypair.name>" "VpcId=vpc-4afffa2d" "SubnetId=subnet-30688556" --capabilities CAPABILITY_IAM
 
 # Example as Michael Robbins
-aws cloudformation deploy --template-file infrastructure-as-code/bastion.yml --stack-name streaming-michaelr-bastion --parameter-overrides "ResourcePrefix=streaming-michaelr" "Keypair=michael.robbins" "VpcId=vpc-4afffa2d" "SubnetId=subnet-30688556"
+aws cloudformation deploy --template-file infrastructure-as-code/bastion.yml --stack-name streaming-michaelr-bastion --parameter-overrides "ResourcePrefix=streaming-michaelr" "Keypair=michael.robbins" "VpcId=vpc-4afffa2d" "SubnetId=subnet-30688556" --capabilities CAPABILITY_IAM
 ```
