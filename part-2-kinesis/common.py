@@ -10,10 +10,10 @@ DEFAULT_BROKERS = [
 
 
 def get_prefix(filename="../resource_prefix.json"):
-    if not os.path.exists(prefix_filename):
+    if not os.path.exists(filename):
         return None
 
-    with open(prefix_filename) as prefix_file:
+    with open(filename) as prefix_file:
         prefix = json.load(prefix_file)["prefix"]
 
 
