@@ -65,81 +65,76 @@ Resources:
           Value: "2"
 
   CustomerStreamAnalytics:
-    Type: "AWS::KinesisAnalyticsV2::Application"
+    Type: "AWS::KinesisAnalytics::Application"
     Properties: 
-      ApplicationConfiguration:
-        ApplicationCodeConfiguration:
-          CodeContent:
-            TextContent: !Sub |
-              CREATE STREAM "CUSTOMER_OUTPUT" (
-                MetricType VARCHAR(16),
-                EventTimestamp BIGINT,
-                MetricItem VARCHAR(1024),
-                UnitValueInt BIGINT,
-                UnitValueFloat DOUBLE
-              );
+      ApplicationCode:
+        !Sub |
+          CREATE STREAM "CUSTOMER_OUTPUT" (
+            MetricType VARCHAR(16),
+            EventTimestamp BIGINT,
+            MetricItem VARCHAR(1024),
+            UnitValueInt BIGINT,
+            UnitValueFloat DOUBLE
+          );
 
-              CREATE OR REPLACE PUMP CUSTOMER_PUMP AS
-              INSERT INTO CUSTOMER_OUTPUT (MetricType, EventTimestamp, MetricItem, UnitValueInt)
-              SELECT 'customer_state_count', UNIX_TIMESTAMP(eventTimestamp), state, state_count FROM (
-                SELECT STREAM
-                    customers."location_state" as state,
-                    count(*) as state_count,
-                    STEP (customers.ROWTIME BY INTERVAL '10' SECOND) as eventTimestamp
-                FROM "CUSTOMER_STREAM_001" customers
-                GROUP BY
-                    customers."location_state",
-                    STEP (customers.ROWTIME BY INTERVAL '10' SECOND)
-              );
-
-          CodeContentType: PLAINTEXT
-        SqlApplicationConfiguration:
-          Inputs:
-            - InputSchema:
-                RecordColumns:
-                  - Mapping: "$.id"
-                    Name: "id"
-                    SqlType: "VARCHAR(128)"
-                  - Mapping: "$.first_name"
-                    Name: "first_name"
-                    SqlType: "VARCHAR(128)"
-                  - Mapping: "$.last_name"
-                    Name: "last_name"
-                    SqlType: "VARCHAR(128)"
-                  - Mapping: "$.location.state"
-                    Name: "location_state"
-                    SqlType: "VARCHAR(128)"
-                  - Mapping: "$.location.postcode"
-                    Name: "location_postcode"
-                    SqlType: "INTEGER"
-                  - Mapping: "$.email"
-                    Name: "email"
-                    SqlType: "VARCHAR(256)"
-                  - Mapping: "$.dob.age"
-                    Name: "dob_age"
-                    SqlType: "INTEGER"
-                  - Mapping: "$.phone"
-                    Name: "phone"
-                    SqlType: "VARCHAR(64)"
-                RecordFormat:
-                  MappingParameters:
-                    JSONMappingParameters:
-                      RecordRowPath: "$"
-                  RecordFormatType: "JSON"
-              KinesisStreamsInput:
-                ResourceARN: !GetAtt "CustomerStream.Arn"
-              NamePrefix: "CUSTOMER_STREAM"
+          CREATE OR REPLACE PUMP "CUSTOMER_PUMP" AS
+          INSERT INTO "CUSTOMER_OUTPUT" (MetricType, EventTimestamp, MetricItem, UnitValueInt)
+          SELECT 'customer_state_count', UNIX_TIMESTAMP(eventTimestamp), state, state_count FROM (
+            SELECT STREAM
+                customers."location_state" as state,
+                count(*) as state_count,
+                STEP (customers.ROWTIME BY INTERVAL '10' SECOND) as eventTimestamp
+            FROM "CUSTOMER_STREAM_001" customers
+            GROUP BY
+                customers."location_state",
+                STEP (customers.ROWTIME BY INTERVAL '10' SECOND)
+          );
       ApplicationName: !Sub "${ResourcePrefix}-customer-stream-analytics"
-      RuntimeEnvironment: "SQL-1_0"
-      ServiceExecutionRole: !GetAtt KinesisAnalyticsRole.Arn
+      Inputs:
+        - InputSchema:
+            RecordColumns:
+              - Mapping: "$.id"
+                Name: "id"
+                SqlType: "VARCHAR(128)"
+              - Mapping: "$.first_name"
+                Name: "first_name"
+                SqlType: "VARCHAR(128)"
+              - Mapping: "$.last_name"
+                Name: "last_name"
+                SqlType: "VARCHAR(128)"
+              - Mapping: "$.location.state"
+                Name: "location_state"
+                SqlType: "VARCHAR(128)"
+              - Mapping: "$.location.postcode"
+                Name: "location_postcode"
+                SqlType: "INTEGER"
+              - Mapping: "$.email"
+                Name: "email"
+                SqlType: "VARCHAR(256)"
+              - Mapping: "$.dob.age"
+                Name: "dob_age"
+                SqlType: "INTEGER"
+              - Mapping: "$.phone"
+                Name: "phone"
+                SqlType: "VARCHAR(64)"
+            RecordFormat:
+              MappingParameters:
+                JSONMappingParameters:
+                  RecordRowPath: "$"
+              RecordFormatType: "JSON"
+          KinesisStreamsInput:
+            ResourceARN: !GetAtt "CustomerStream.Arn"
+            RoleARN: !GetAtt "KinesisAnalyticsRole.Arn"
+          NamePrefix: "CUSTOMER_STREAM"
 
   CustomerStreamAnalyticsOutput:
-    Type: "AWS::KinesisAnalyticsV2::ApplicationOutput"
+    Type: "AWS::KinesisAnalytics::ApplicationOutput"
     Properties:
       ApplicationName: !Ref CustomerStreamAnalytics
       Output:
-        Name: "CUSTOMER_OUTPUT"
         DestinationSchema:
           RecordFormatType: CSV
         KinesisStreamsOutput:
-          ResourceARN: !GetAtt CustomerOutputStream.Arn
+          ResourceARN: !GetAtt "CustomerOutputStream.Arn"
+          RoleARN: !GetAtt "KinesisAnalyticsRole.Arn"
+        Name: "CUSTOMER_OUTPUT"
