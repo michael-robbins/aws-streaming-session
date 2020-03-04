@@ -41,7 +41,6 @@ for topic_name, stream_name in topic_to_stream.items():
     consumer.seek_to_beginning()
 
     consumers.append((consumer, stream_name))
-)
 
 
 # Iterate over the Consumers, read all messages, post to Kinesis Stream
@@ -58,8 +57,8 @@ while True:
 
                 kinesis.put_record(
                     StreamName=stream_name,
-                    Data=json.dumps(record).encode("utf-8"),
-                    PartitionKey=record["id"],
+                    Data=json.dumps(record.value).encode("utf-8"),
+                    PartitionKey=record.value["id"],
                 )
 
         if i:
