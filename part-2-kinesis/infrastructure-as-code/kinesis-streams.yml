@@ -79,12 +79,12 @@ Resources:
                 UnitValueFloat DOUBLE
               );
 
-              CREATE OR REPLACE PUMP "CUSTOMER_PUMP" AS
-              INSERT INTO "CUSTOMER_OUTPUT" (MetricType, EventTimestamp, MetricItem, UnitValueInt)
-              SELECT 'customer_city_count', UNIX_TIMESTAMP(eventTimestamp), city, city_count FROM (
+              CREATE OR REPLACE PUMP CUSTOMER_PUMP AS
+              INSERT INTO CUSTOMER_OUTPUT (MetricType, EventTimestamp, MetricItem, UnitValueInt)
+              SELECT 'customer_state_count', UNIX_TIMESTAMP(eventTimestamp), state, state_count FROM (
                 SELECT STREAM
-                    customers."location_city" as city,
-                    count(*) as city_count,
+                    customers."location_state" as state,
+                    count(*) as state_count,
                     STEP (customers.ROWTIME BY INTERVAL '10' SECOND) as eventTimestamp
                 FROM "CUSTOMER_STREAM_001" customers
                 GROUP BY
@@ -105,9 +105,6 @@ Resources:
                     SqlType: "VARCHAR(128)"
                   - Mapping: "$.last_name"
                     Name: "last_name"
-                    SqlType: "VARCHAR(128)"
-                  - Mapping: "$.location.city"
-                    Name: "location_city"
                     SqlType: "VARCHAR(128)"
                   - Mapping: "$.location.state"
                     Name: "location_state"
