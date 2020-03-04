@@ -49,6 +49,7 @@ Resources:
       CidrIp: "0.0.0.0/0"
       Description: "Allow internet access"
       IpProtocol: "-1"
+      GroupId: !Ref BastionSG
 
   BastionEC2:
     Type: "AWS::EC2::Instance"
