@@ -2,6 +2,7 @@
 
 from kafka import KafkaProducer
 from kafka.errors import KafkaError
+from common import get_brokers
 
 import requests
 import random
@@ -31,11 +32,7 @@ def generate_customer():
 
 
 if __name__ == "__main__":
-    brokers = [
-        "broker-1:9092",
-        "broker-2:9092",
-        "broker-3:9092",
-    ]
+    brokers = get_brokers()
 
     producer = KafkaProducer(
         bootstrap_servers=brokers,

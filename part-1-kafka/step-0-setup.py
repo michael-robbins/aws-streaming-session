@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
 
 from kafka.admin import KafkaAdminClient, NewTopic
+from common import get_brokers
 
 
-brokers = [
-    "broker-1:9092",
-    "broker-2:9092",
-    "broker-3:9092",
-]
+brokers = get_brokers()
 
 admin_client = KafkaAdminClient(bootstrap_servers=brokers, client_id="create_topics")
 

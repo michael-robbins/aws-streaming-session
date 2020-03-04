@@ -2,6 +2,7 @@
 
 from kafka import KafkaProducer, KafkaConsumer
 from kafka.errors import KafkaError
+from common import get_brokers
 
 import datetime
 import json
@@ -40,11 +41,7 @@ def update_customers(consumer):
 
 
 if __name__ == "__main__":
-    brokers = [
-        "broker-1:9092",
-        "broker-2:9092",
-        "broker-3:9092",
-    ]
+    brokers = get_brokers()
 
     producer = KafkaProducer(
         bootstrap_servers=brokers,
