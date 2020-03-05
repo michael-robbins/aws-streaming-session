@@ -18,9 +18,6 @@ if prefix is None:
 
 topic_to_stream = {
     "customers": "{prefix}-customer-stream".format(prefix=prefix),
-    "orders":    "{prefix}-order-stream".format(prefix=prefix),
-    "invoices":  "{prefix}-invoice-stream".format(prefix=prefix),
-    "shipments": "{prefix}-shipment-stream".format(prefix=prefix),
 }
 
 
