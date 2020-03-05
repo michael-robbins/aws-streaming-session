@@ -83,11 +83,11 @@ Resources:
             SELECT STREAM
                 customers."location_state" as state,
                 count(*) as state_count,
-                STEP (customers.ROWTIME BY INTERVAL '10' SECOND) as eventTimestamp
+                STEP (customers.ROWTIME BY INTERVAL '30' SECOND) as eventTimestamp
             FROM "CUSTOMER_STREAM_001" customers
             GROUP BY
                 customers."location_state",
-                STEP (customers.ROWTIME BY INTERVAL '10' SECOND)
+                STEP (customers.ROWTIME BY INTERVAL '30' SECOND)
           );
       ApplicationName: !Sub "${ResourcePrefix}-customer-stream-analytics"
       Inputs:
