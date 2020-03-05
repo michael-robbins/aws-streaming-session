@@ -11,7 +11,10 @@ if prefix is None:
     raise Exception("Unable to find prefix?")
 
 streams = {
-    "{prefix}-customer-stream".format(prefix=prefix): {},
+    "{prefix}-customer-stream".format(prefix=prefix): {
+        "shard_id": None,
+        "iterator": None,
+    },
 }
 
 
