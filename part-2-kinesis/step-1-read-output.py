@@ -42,7 +42,7 @@ while True:
             stream_options["iterator"] = response["ShardIterator"]
 
         response = kinesis.get_records(
-            ShardIterator=iterator,
+            ShardIterator=stream_options["iterator"],
             Limit=1,
         )
 
