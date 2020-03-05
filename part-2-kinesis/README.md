@@ -24,3 +24,6 @@ aws cloudformation deploy --template-file infrastructure-as-code/kinesis-streams
 # Example as Michael Robbins
 aws cloudformation deploy --template-file infrastructure-as-code/kinesis-streams.yml --stack-name streaming-michaelr-kinesis-streams --parameter-overrides "ResourcePrefix=streaming-michaelr" --capabilities CAPABILITY_IAM
 ```
+
+# Further
+1. Let's create another stream for another Kafka Index!
