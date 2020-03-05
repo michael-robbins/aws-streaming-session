@@ -9,6 +9,7 @@ There are 3 basic primitives to understand in a Pub/Sub service:
   * Collection of messages sent from publishers, destined to subscribers
   * Topics usually holds messages of a similar schema, an interface contract between publishers and subscribers
     * But this is not usually enforced by the Topic
+  * Can hold messages indefinitely (with compaction to ensure your not needlessly storing messages)
 
 * Publisher (message producer)
   * Publishers generate events (information) and send them to their pre-determined topics

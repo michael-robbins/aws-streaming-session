@@ -1,22 +1,21 @@
-# Intro to the two Kinesis offerings we'll be going through
+# Intro to the two AWS Kinesis offerings we'll be going through
 
-# Kinesis Data Streams
-Getting data from A to B.
-Similar concept to a Kafka 'topic'.
+## AWS Kinesis Data Streams
+A way to get a message from A to B, C and/or D in a highly scalable, decoupled, resilient 'pipe'.
 
-Build script that will consume the various Kafka topics and pipe them into their respective kinesis streams
+Similar concept to a Kafka 'topic', with all the underlying tweaks to scale out, order, group your messages to ensure they're read correctly by your consumers.
 
+While messages in Kafka can potentially be stored forever, Kinesis Data Streams are more focused around being that 'pipe' that provides transport for messages, not being your final storage.
 
-# Kinesis Data Analytics
-Running analytical queries over your data stream
-Many possible methods to aggregate and window
+## AWS Kinesis Data Analytics
+Provides the ability to consume a stream of data (Kinesis Firehose, Kinesis Streams, other producers as well) and run an 'application' (SQL Dialect or Apache Flink) over the stream.
 
+Similar concept to KSQL that was mentioned in Part 1 of the Streaming Session.
 
-Pipe in the above Kinesis Data Streams into their Kinesis Data Analytics pipes
+The built-in SQL dialect can run a number of analytical queries over the data, aggregating over windows, creating new metrics, and handle exporting to any supported output (other Kinesis Streams, Kinesis Firehose, Lambda).
 
-Generate some example SQL to go over the top and generate some insights!
-
-
+## AWS Kinesis Firehose
+We won't cover this in this session, but the main gist of Firehose is consuming streaming data and loading it into Data Lakes, Data Warehouses, S3, etc...
 
 # Deploy the AWS Kinesis Streams & Analytics
 ```bash
