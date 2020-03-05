@@ -33,7 +33,7 @@ for stream_name in streams.keys():
 while True:
     for stream_name, stream_options in streams.items():
         if not stream_options["iterator"]:
-            response = client.get_shard_iterator(
+            response = kinesis.get_shard_iterator(
                 StreamName=stream_name,
                 ShardId=stream_options["shard_id"],
                 ShardIteratorType="TRIM_HORIZON",
