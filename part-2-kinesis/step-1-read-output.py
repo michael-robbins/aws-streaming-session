@@ -11,7 +11,7 @@ if prefix is None:
     raise Exception("Unable to find prefix?")
 
 streams = {
-    "{prefix}-customer-stream".format(prefix=prefix): {
+    "{prefix}-customer-output-stream".format(prefix=prefix): {
         "shard_id": None,
         "iterator": None,
     },
@@ -45,8 +45,6 @@ while True:
             ShardIterator=stream_options["iterator"],
             Limit=1,
         )
-
-        print(response)
 
         for record in response["Records"]:
             print(record["Data"].decode("utf-8"))
