@@ -107,7 +107,13 @@ Resources:
             pushd /home/ec2-user
             git clone https://github.com/michael-robbins/aws-streaming-session.git
             chown -R ec2-user:ec2-user aws-streaming-session
+
             echo '{ "prefix": "${ResourcePrefix}" }' > aws-streaming-session/resource_prefix.json
+            chown ec2-user:ec2-user aws-streaming-session/resource_prefix.json
+
+            mkdir .aws
+            echo -e '[default]\nregion = ${AWS::Region}' > .aws/config
+            chown ec2-user:ec2-user .aws/config
             popd
 
 Outputs:
