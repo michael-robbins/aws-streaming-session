@@ -23,7 +23,7 @@ Other parts of a Pub/Sub system include:
   * These are servers that 'host' a topic, or part thereof
   * Certain Pub/Sub implementations form clusters of brokers that 'share' a topic between nodes in a resilient and performant manner (eg. Kafka!)
 
-* Shards
+* Partitions/Shards
   * A 'part' of a topic, usually whos length is defined as a period of time
   * Stores messages for just that 'part', can be replicated/duplicated as nessesary
   * Multiple shards form a topic (not just specific to Kafka, AWS Kinesis has this concept as well!)
@@ -37,6 +37,12 @@ The flow of events in a Pub/Sub service usually follows these basic steps:
 4. An event is sent to the Broker hosting the topic with the information
 5. The Broker ensures the event is stored correctly and makes it available to its Subscribers
 6. One or more Subscribers download the event and do 'something'
+
+## What builds on-top of Kafka (Topics)?
+
+### KSQL
+Offered by Confluent as a SQL engine to run queries over Kafka Topic(s).
+Allows you to run queries, generating insights, and writing those out to new topics.
 
 # Deploy the AWS Kafka Cluster
 
